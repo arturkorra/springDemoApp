@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="static/css/index.css" th:href="@{/css/index.css}">
+	 <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+       <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <!--         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        <script src="http://malsup.github.io/jquery.blockUI.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Navigation List</title>
+<style type="text/css">
+body {
+	font-family: "Open Sans", sans-serif;
+	line-height: 1.25;
+}
+
+table {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	table-layout: fixed;
+}
+
+table caption {
+	font-size: 1.5em;
+	margin: .5em 0 .75em;
+}
+
+table tr {
+	background-color: rgba(255, 255, 255, 0.6);
+	border: 1px solid #ddd;
+	padding: .35em;
+}
+
+table th, table td {
+	padding: .625em;
+	text-align: center;
+}
+
+table th {
+	font-size: .85em;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+}
+
+/* @media screen and (max-width: 300px) { */
+/*   .margin{ */
+/*     margin-top:30%; */
+/*   } */
+/*   } */
+@media screen and (max-width: 800px) {
+	table {
+		border: 0;
+	}
+	table caption {
+		font-size: 1.3em;
+	}
+	table thead {
+		border: none;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+	table tr {
+		border-bottom: 3px solid #ddd;
+		display: block;
+		margin-bottom: .625em;
+	}
+	table td {
+		border-bottom: 1px solid #ddd;
+		display: block;
+		font-size: .8em;
+		text-align: right;
+	}
+	table td::before {
+		/*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+	table td:last-child {
+		border-bottom: 0;
+	}
+}
+</style>
+</head>
+<body>
+		<br />
+	<div class="panel panel-default margin"
+		style="width: 95%; margin-left: 2.5%; background-color: rgba(255, 255, 255, 0.6);">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+		</div>
+
+		<table class="display"
+			style="background-color: rgba(255, 255, 255, 0.6);">
+			<thead>
+				<tr>
+					<th scope="col">Sort With Username</th>
+					<th scope="col">Sort With Lastname</th>
+					<th scope="col">Add New User</th>
+					<th scope="col">Log Out</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="Sort With Username"><a class="btn btn-primary"
+						 th:href="@{/sortUsername}">
+							Sort With Username </a></td>
+
+					<td data-label="Sort With Lastname"><a class="btn btn-primary"
+						 th:href="@{/sortLastname}">
+							Sort With Lastname </a></td>
+				<td data-label="Add New User">
+							<a
+						class="btn btn-primary"
+						style="background-color: #4CAF50 !important"
+						th:href="@{|/addUser|}">Add New User</a>
+						</td>
+					<td data-label="Log Out">
+						<form th:action="@{/logout}" method="post">
+							<input type="submit" class="btn btn-primary"
+								style="background-color: #b30000 !important" value="Log Out" />
+						</form>
+					</td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class="panel panel-default margin"
+		style="width: 95%; margin-left: 2.5%; background-color: rgba(255, 255, 255, 0.6);">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<span class="lead">Add User </span>
+		</div>
+	<div th:if="${errorMessage!= null}" class="error-message"
+		th:utext="${errorMessage}"></div>
+
+	<form th:object="${user}" th:action="@{/saveEdit}" method="POST"
+		enctype="multipart/form-data">
+		<table style="text-align: left;">
+			<thead>
+				<tr>
+				    <th scope="col" style="display: none;">Id</th>
+					<th scope="col">Username</th>
+					<th scope="col">Password</th>
+					<th scope="col">Lastname</th>
+					<th scope="col">Work</th>
+					<th scope="col">Home</th>
+					<th scope="col">Phone</th>
+					<th scope="col">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="width:99%">
+				<td style="display: none;" data-label="Id"
+						><input th:field="*{id}" /></td>
+				<td> <div>
+                   <label for="username"></label>
+                   <input placeholder="Username" class="form-control" th:field="*{username}" id="username" required="true"/>
+					 </div> 
+					 </td>
+						<td><div>
+                   <label for="password"></label>
+                     <input placeholder="Password" type="password" class="form-control" th:field="*{password}" id="password" required="true"/>
+				  </div>
+						</td>
+						<td> <div>
+                   <label for="lastname"></label>
+                   <input placeholder="Lastname" class="form-control" th:field="*{lastname}" id="lastname" />
+                     </div>
+						</td>
+						<td> <div>
+                   <label for="work"></label>
+                   <input placeholder="Work" class="form-control" th:field="*{work}" id="work" />
+                     </div>
+						</td>
+						<td> <div>
+                   <label for="home"></label>
+                   <input placeholder="Home" class="form-control" th:field="*{home}" id="home" />
+                     </div>
+						</td>
+						<!-- style="width:auto; white-space: pre-line;" -->
+						<td
+						 data-label="Number"
+						><div>
+  <label for="number"></label>
+  <input placeholder="Phone number" class="form-control" th:field="*{number}" id="number" />
+</div>
+				        </td>
+					   <td data-label="Action" style="width:auto;"><div style="padding-top:15px;">
+					   <input type="submit" class="btn btn-primary"
+					   value="Submit" /> <input class="btn btn-primary" style="background-color: #b30000 !important" type="reset"
+					   value="Reset" /></div></td>
+                  </tr>
+			</tbody>
+		</table>
+	</form>
+	</div>
+</body>
+</html>

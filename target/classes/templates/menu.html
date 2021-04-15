@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="static/css/index.css"
+	th:href="@{/css/index.css}">
+<script src="https://code.jquery.com/jquery-3.3.1.js"
+	integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+	crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="http://malsup.github.io/jquery.blockUI.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy"
+	content="upgrade-insecure-requests" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Users List</title>
+<style type="text/css">
+body {
+	font-family: "Open Sans", sans-serif;
+	line-height: 1.25;
+}
+
+table {
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	table-layout: fixed;
+}
+
+table caption {
+	font-size: 1.5em;
+	margin: .5em 0 .75em;
+}
+
+table tr {
+	background-color: rgba(255, 255, 255, 0.6);
+	border: 1px solid #ddd;
+	padding: .35em;
+}
+
+table th, table td {
+	padding: .625em;
+	text-align: center;
+}
+
+table th {
+	font-size: .85em;
+	letter-spacing: .1em;
+	text-transform: uppercase;
+}
+
+/* @media screen and (max-width: 300px) { */
+/*   .margin{ */
+/*     margin-top:30%; */
+/*   } */
+/*   } */
+@media screen and (max-width: 800px) {
+	table {
+		border: 0;
+	}
+	table caption {
+		font-size: 1.3em;
+	}
+	table thead {
+		border: none;
+		clip: rect(0, 0, 0, 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+	}
+	table tr {
+		border-bottom: 3px solid #ddd;
+		display: block;
+		margin-bottom: .625em;
+	}
+	table td {
+		border-bottom: 1px solid #ddd;
+		display: block;
+		font-size: .8em;
+		text-align: right;
+	}
+	table td::before {
+		/*
+    * aria-label has no advantage, it won't be read inside a table
+    content: attr(aria-label);
+    */
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+	table td:last-child {
+		border-bottom: 0;
+	}
+}
+.green { 
+    border-bottom: 10px solid rgba(0,255,0,0.5);
+}
+.blue { 
+    background-color:rgba(51, 153, 255,0.5);
+}
+.red {
+    border-bottom: 10px solid rgba(255,0,0,0.5);
+}
+</style>
+</head>
+<body >
+<!-- ///onload="scrollID()" -->
+	<br />
+	<div class="panel panel-default margin"
+		style="width: 95%; margin-left: 2.5%; background-color: rgba(255, 255, 255, 0.6);">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+		</div>
+
+		<table class="display"
+			style="background-color: rgba(255, 255, 255, 0.6);">
+			<thead>
+				<tr>
+					<th scope="col">Sort With Username</th>
+					<th scope="col">Sort With Lastname</th>
+					<th scope="col">Add New User</th>
+					<th scope="col">Log Out</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-label="Sort With Username"><a class="btn btn-primary"
+						th:href="@{/sortUsername}">
+							Sort With Username </a></td>
+
+					<td data-label="Sort With Lastname"><a class="btn btn-primary"
+						 th:href="@{/sortLastname}">
+							Sort With Lastname </a></td>
+					 <td data-label="Add New User">
+							<a
+						class="btn btn-primary"
+						style="background-color: #4CAF50 !important"
+						th:href="@{|/addUser|}">Add New User</a>
+						</td>
+					<td data-label="Log Out">
+						<form th:action="@{/logout}" method="post">
+							<input type="submit" class="btn btn-primary"
+								style="background-color: #b30000 !important" value="Log Out" />
+						</form>
+					</td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<br />
+	<br />
+	<br />
+	<div class="panel panel-default margin"
+		style="width: 95%; margin-left: 2.5%; background-color: rgba(255, 255, 255, 0.6);">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			<span class="lead">Users (Size) : </span><span class="lead" th:text="${allUsers!=null} ? ${allUsers.size()}: ----"></span>
+		</div>
+        <table style="background-color: rgba(255, 255, 255, 0.6);">
+			<thead>
+				<tr>
+				    <th scope="col" style="display: none;">ID</th>
+					<th scope="col">Username</th>
+					<th scope="col">LastName</th>
+					<th scope="col">Work</th>
+					<th scope="col">Home</th>
+					<th scope="col">Phone</th>
+					<th scope="col">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr style="width: 99%" th:id="${users.id}" th:each="users : ${allUsers}">
+				<td style="display: none;"
+						th:text="${users.id!=null} ? ${users.id}: ----"></td>
+					<td style="text-align: left; width: 50%; white-space: pre-line;"
+						data-label="Username"
+						th:text="${users.username!=null} ? ${users.username}: ----"></td>
+					<td style="width: auto;" data-label="Lastname"
+						th:text="${users.lastname!=null} ? ${users.lastname}: ----"></td>
+					<td style="width: auto;" data-label="Work"
+						th:text="${users.work!=null} ? ${users.work}: ----"></td>
+					<td style="width: auto;" data-label="Home"
+						th:text="${users.home!=null} ? ${users.home}: ----"></td>
+					<td style="width: auto; white-space: pre-line;"
+						data-label="Number"
+						th:text="${users.number!=null} ? ${users.number}: ----"></td>
+					<td style="width: auto; padding:5px 5px 5px 5px;" data-label="Edit"><a
+						class="btn btn-primary"
+						th:href="@{|/edit?id=${users.id}|}">Edit</a><a
+						class="btn btn-primary"
+						style="background-color: #b30000 !important; margin-left:10px;"
+						th:href="@{|/deleteUser?id=${users.id}|}">Delete</a></td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

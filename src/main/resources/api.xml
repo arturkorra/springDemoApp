@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<note>
+<to>API</to>
+<type>GET</type>
+<des>ALL USER</des>
+<url>http://localhost:8080/springDemoApp/api/service/usersJSON/allUser</url>
+
+<to>API</to>
+<type>DELETE</type>
+<des>DELETE USER</des>
+<url>http://localhost:8080/springDemoApp/api/service/usersJSON/deleteUser?id=5</url>
+
+</note>
